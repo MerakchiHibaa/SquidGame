@@ -71,6 +71,42 @@ function createTrack() {
 }
 createTrack() ;
 
+class Player {
+    constructor(){
+        const geometry = new THREE.SphereGeometry( .3, 32, 16 );
+        const material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+        const sphere = new THREE.Mesh( geometry, material );
+        sphere.position.z = 1 
+        sphere.position.x = start_position
+        scene.add( sphere );
+        this.player = sphere
+        this.playerInfo = {
+            positionX : start_position , 
+            velocity: 0  //speed
+        }
+        
+
+
+    }
+    run (){
+        this.playerInfo.velocity = .03
+            
+    }
+    update() {
+        this.playerInfo.positionX -= this.playerInfo.velocity  
+        this.player.position.x = this.playerInfo.positionX ; 
+    }
+
+    stop() {
+     //   this.playerInfo.velocity = .0 ;
+     gsap.to(this.playerInfo , {velocity:0 , duration: .1})
+    }
+
+    
+}
+
+const player = new Player()
+
 let doll = new Doll() ; 
 setTimeout(() => {
     doll.lookBack()
@@ -81,6 +117,7 @@ function animate() {
     renderer.render(scene , camera) ;
 
 	requestAnimationFrame( animate );
+    player.update() ; 
  }
 animate();
 //to make it responsive
@@ -92,3 +129,16 @@ function onWindowResize() {
     renderer.setSize(window.innerWidth , window.innerHeight) ; 
 
 }
+
+window.addEventListener('keydown' , (e) => {
+    if(e.key == "ArrowUp") {
+        player.run()
+    }
+
+}) 
+
+window.addEventListener('keyup' , (e) => {
+    if(e.key =="ArrowUp") {
+        player.stop()
+    }
+})

@@ -19,7 +19,7 @@ const end_position = -start_position
 const text = document.querySelector(".text") 
 const TIME_LIMIT = 10
 let gameStat = "loading"
-let ifLookinBackward = true
+let isLookinBackward = true
 
 
 function createCube (size , positionX , rotY = 0 , color = 0xfbc851) {
@@ -59,12 +59,12 @@ loader.load('../models/scene.gltf' , (gltf) => {
     lookBackward() {
        // this.doll.rotation.y = -3.15 ; 
        gsap.to(this.doll.rotation , {y: -3.15 , duration: .45}) ; //it takes 450 ms for the doll to look backward
-    setTimeout(() => ifLookinBackward = true , 150)
+    setTimeout(() => isLookinBackward = true , 150)
     }
     lookForward() {
     //    this.doll.rotation.y = 0 ; 
     gsap.to(this.doll.rotation , {y: 0 , duration: .45});
-    setTimeout(() => ifLookinBackward = true , 450)
+    setTimeout(() => isLookinBackward = false , 450)
 
     }
 async start() {
@@ -111,6 +111,7 @@ class Player {
             
     }
     update() {
+        this.check() ;
         this.playerInfo.positionX -= this.playerInfo.velocity  
         this.player.position.x = this.playerInfo.positionX ; 
     }
@@ -121,12 +122,12 @@ class Player {
     }
 
     check() {
-        if((this.playerInfo.velocity > 0 ) && !isLookingBackward ) {
-            text.innerText("You lost!")
+        if((this.playerInfo.velocity > 0 ) && !isLookinBackward ) {
+            text.innerText ="You lost!" ;
             gameStat ="over"
         }
-        if(this.playerInfo.positionX <end_position +.4 ) {
-            text.innerText("You won!") ; 
+        if(this.playerInfo.positionX < end_position +.4 ) {
+            text.innerText = "You won!" ; 
             gameStat ="over" ; 
         }
 
@@ -178,9 +179,9 @@ setTimeout(() => {
 function animate() {
     if(gameStat == "over") return
     renderer.render(scene , camera) ;
-
-	requestAnimationFrame( animate );
     player.update() ; 
+	requestAnimationFrame( animate );
+    
  }
 animate();
 //to make it responsive
